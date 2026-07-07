@@ -27,6 +27,15 @@ Route::post('driver-register', [API\UserController::class, 'driverRegister']);
 Route::post('new-login', [API\UserController::class, 'newlogin']);
 Route::post('new-forget-password', [API\UserController::class, 'newforgetPassword']);
 Route::post('new-socialLogin', [API\UserController::class, 'newsocialLogin']);
+Route::prefix('auth')->group(function () {
+    Route::post('register', [API\AuthCommonController::class, 'register']);
+    Route::post('login', [API\AuthCommonController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('me', [API\AuthCommonController::class, 'me']);
+        Route::post('logout', [API\AuthCommonController::class, 'logout']);
+    });
+});
 Route::get('user-list', [API\UserController::class, 'userList']);
 Route::get('user-detail', [API\UserController::class, 'userDetail']);
 Route::post('paytr-callback', [API\PaymentController::class, 'callback']);
