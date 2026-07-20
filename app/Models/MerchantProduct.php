@@ -13,6 +13,7 @@ class MerchantProduct extends Model
 
     protected $fillable = [
         'merchant_id',
+        'category_id',
         'name',
         'description',
         'price',
@@ -23,6 +24,7 @@ class MerchantProduct extends Model
 
     protected $casts = [
         'merchant_id' => 'integer',
+        'category_id' => 'integer',
         'price' => 'double',
         'status' => 'integer',
         'sort_order' => 'integer',
@@ -31,6 +33,11 @@ class MerchantProduct extends Model
     public function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(MerchantCategory::class, 'category_id', 'id');
     }
 
     public function orderItems()

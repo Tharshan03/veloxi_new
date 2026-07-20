@@ -35,9 +35,22 @@ class MerchantOrder extends Model
         'user_id',
         'merchant_id',
         'status',
+        'fulfillment_type',
         'subtotal_amount',
+        'subtotal',
+        'delivery_fee',
+        'delivery_distance_km',
         'total_amount',
+        'total',
+        'delivery_address_id',
         'delivery_address',
+        'delivery_address_line2',
+        'delivery_city',
+        'delivery_postal_code',
+        'delivery_instructions',
+        'pickup_time',
+        'delivery_latitude',
+        'delivery_longitude',
         'customer_name',
         'customer_phone',
         'notes',
@@ -51,7 +64,15 @@ class MerchantOrder extends Model
         'user_id' => 'integer',
         'merchant_id' => 'integer',
         'subtotal_amount' => 'double',
+        'subtotal' => 'double',
+        'delivery_fee' => 'double',
+        'delivery_distance_km' => 'double',
         'total_amount' => 'double',
+        'total' => 'double',
+        'delivery_address_id' => 'integer',
+        'pickup_time' => 'datetime',
+        'delivery_latitude' => 'double',
+        'delivery_longitude' => 'double',
         'accepted_at' => 'datetime',
         'refused_at' => 'datetime',
         'ready_at' => 'datetime',
@@ -71,5 +92,10 @@ class MerchantOrder extends Model
     public function items()
     {
         return $this->hasMany(MerchantOrderItem::class, 'merchant_order_id', 'id');
+    }
+
+    public function deliveryAddress()
+    {
+        return $this->belongsTo(UserAddress::class, 'delivery_address_id', 'id');
     }
 }
