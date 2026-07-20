@@ -135,6 +135,14 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(UserAddress::class, 'user_id', 'id');
     }
 
+    public function ownedMerchants() {
+        return $this->hasMany(Merchant::class, 'owner_user_id', 'id');
+    }
+
+    public function merchantOrders() {
+        return $this->hasMany(MerchantOrder::class, 'user_id', 'id');
+    }
+
     public function userNotification(){
         return $this->hasMany(Notification::class, 'notifiable_id', 'id');
     }

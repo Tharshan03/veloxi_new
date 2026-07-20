@@ -51,6 +51,11 @@ use App\Http\Controllers\DocumentVerificationController;
 use App\Http\Controllers\SupportchatHistoryController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\WebSiteSectionController;
+use App\Http\Controllers\MerchantAuthController;
+use App\Http\Controllers\MerchantAccountOrderController;
+use App\Http\Controllers\MerchantCartController;
+use App\Http\Controllers\MerchantCheckoutController;
+use App\Http\Controllers\MerchantPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -450,3 +455,27 @@ Route::post('client-store', [ClientController::class, 'frontendclientstore'])->n
 Route::get('page/{slug}', [FronthomeController::class, 'page'])->name('pages');
 
 Route::get('sms-orderhistory/{order_id}', [FronthomeController::class, 'smsorderhistory'])->name('sms-orderhistory');
+
+Route::get('restaurant-login', [MerchantAuthController::class, 'showLogin'])->middleware('guest')->name('merchant.login');
+Route::post('restaurant-login', [MerchantAuthController::class, 'login'])->middleware('guest')->name('merchant.login.store');
+Route::get('restaurant-register', [MerchantAuthController::class, 'showRegister'])->middleware('guest')->name('merchant.register');
+Route::post('restaurant-register', [MerchantAuthController::class, 'register'])->middleware('guest')->name('merchant.register.store');
+
+Route::get('cart', [MerchantCartController::class, 'show'])->name('merchant.cart.show');
+Route::post('cart/products/{product}', [MerchantCartController::class, 'add'])->name('merchant.cart.add');
+Route::patch('cart/products/{product}', [MerchantCartController::class, 'update'])->name('merchant.cart.update');
+Route::delete('cart/products/{product}', [MerchantCartController::class, 'remove'])->name('merchant.cart.remove');
+Route::patch('cart/fulfillment', [MerchantCartController::class, 'fulfillment'])->name('merchant.cart.fulfillment');
+Route::delete('cart', [MerchantCartController::class, 'clear'])->name('merchant.cart.clear');
+
+Route::get('checkout', [MerchantCheckoutController::class, 'show'])->name('merchant.checkout.show');
+Route::post('checkout', [MerchantCheckoutController::class, 'store'])->name('merchant.checkout.store');
+Route::get('order-confirmation/{order}', [MerchantCheckoutController::class, 'confirmation'])->name('merchant.order.confirmation');
+Route::middleware('auth')->group(function () {
+    Route::get('mon-compte/commandes', [MerchantAccountOrderController::class, 'index'])->name('merchant.account.orders.index');
+    Route::get('mon-compte/commandes/{order}', [MerchantAccountOrderController::class, 'show'])->name('merchant.account.orders.show');
+});
+
+Route::get('/{merchant:slug}', [MerchantPageController::class, 'show'])
+    ->where('merchant', '^(?!api$|adminHub$|admin$|auth$|login$|logout$|register$|restaurant-login$|restaurant-register$|cart$|checkout$|order-confirmation$|migrate$|storage-link$|optimize$|logs$|map$|paytr-success$|paytr-failed$|ajax-list$|frontend-section$|ordertracking$|email-order$|orderhistory$|aboutusdetail$|contactus$|privacypolicy$|delivery-partner$|termofservice$|client-store$|page$|sms-orderhistory$)[A-Za-z0-9-]+$')
+    ->name('merchant.public.show');

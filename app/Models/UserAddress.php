@@ -15,6 +15,8 @@ class UserAddress extends Model
         'user_id'       => 'integer',
         'country_id'    => 'integer',
         'city_id'       => 'integer',
+        'latitude'      => 'double',
+        'longitude'     => 'double',
     ];
 
     public function user()
