@@ -40,6 +40,10 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
+            if ($request->is('merchant/demo/orders*')) {
+                return route('merchant.dashboard.login');
+            }
+
             return route('login');
         }
     }

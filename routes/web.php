@@ -55,6 +55,8 @@ use App\Http\Controllers\MerchantAuthController;
 use App\Http\Controllers\MerchantAccountOrderController;
 use App\Http\Controllers\MerchantCartController;
 use App\Http\Controllers\MerchantCheckoutController;
+use App\Http\Controllers\MerchantDashboardAuthController;
+use App\Http\Controllers\MerchantOrderDashboardController;
 use App\Http\Controllers\MerchantPageController;
 
 /*
@@ -456,6 +458,9 @@ Route::get('page/{slug}', [FronthomeController::class, 'page'])->name('pages');
 
 Route::get('sms-orderhistory/{order_id}', [FronthomeController::class, 'smsorderhistory'])->name('sms-orderhistory');
 
+Route::get('merchant/login', [MerchantDashboardAuthController::class, 'showLogin'])->middleware('guest')->name('merchant.dashboard.login');
+Route::post('merchant/login', [MerchantDashboardAuthController::class, 'login'])->middleware('guest')->name('merchant.dashboard.login.store');
+
 Route::get('restaurant-login', [MerchantAuthController::class, 'showLogin'])->middleware('guest')->name('merchant.login');
 Route::post('restaurant-login', [MerchantAuthController::class, 'login'])->middleware('guest')->name('merchant.login.store');
 Route::get('restaurant-register', [MerchantAuthController::class, 'showRegister'])->middleware('guest')->name('merchant.register');
@@ -475,6 +480,17 @@ Route::middleware('auth')->group(function () {
     Route::get('mon-compte/commandes', [MerchantAccountOrderController::class, 'index'])->name('merchant.account.orders.index');
     Route::get('mon-compte/commandes/{order}', [MerchantAccountOrderController::class, 'show'])->name('merchant.account.orders.show');
 });
+
+Route::middleware(['merchant.dashboard.auth', 'merchant.role'])
+    ->prefix('merchant/demo/orders')
+    ->group(function () {
+        Route::get('/', [MerchantOrderDashboardController::class, 'index'])->name('merchant.orders.index');
+        Route::get('{order}', [MerchantOrderDashboardController::class, 'show'])->name('merchant.orders.show');
+        Route::post('{order}/accept', [MerchantOrderDashboardController::class, 'accept'])->name('merchant.orders.accept');
+        Route::post('{order}/refuse', [MerchantOrderDashboardController::class, 'refuse'])->name('merchant.orders.refuse');
+        Route::post('{order}/preparing', [MerchantOrderDashboardController::class, 'preparing'])->name('merchant.orders.preparing');
+        Route::post('{order}/ready', [MerchantOrderDashboardController::class, 'ready'])->name('merchant.orders.ready');
+    });
 
 Route::get('/{merchant:slug}', [MerchantPageController::class, 'show'])
     ->where('merchant', '^(?!api$|adminHub$|admin$|auth$|login$|logout$|register$|restaurant-login$|restaurant-register$|cart$|checkout$|order-confirmation$|migrate$|storage-link$|optimize$|logs$|map$|paytr-success$|paytr-failed$|ajax-list$|frontend-section$|ordertracking$|email-order$|orderhistory$|aboutusdetail$|contactus$|privacypolicy$|delivery-partner$|termofservice$|client-store$|page$|sms-orderhistory$)[A-Za-z0-9-]+$')

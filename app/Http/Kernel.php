@@ -68,5 +68,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\Admin::class,
         'frontsection' => \App\Http\Middleware\FrontSection::class,
         'assign_user_role' => \App\Http\Middleware\AssignUserRole::class,
+        'merchant.dashboard.auth' => \App\Http\Middleware\AuthenticateMerchantDashboard::class,
+        'merchant.role' => \App\Http\Middleware\EnsureMerchantRole::class,
     ];
 }
